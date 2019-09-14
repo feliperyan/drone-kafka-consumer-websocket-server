@@ -68,7 +68,7 @@ func incomingWebsocket(wri http.ResponseWriter, req *http.Request) {
 			return
 		}
 		if mt == websocket.TextMessage {
-			fmt.Println(string(msg))
+			fmt.Println("From Client: ", string(msg))
 		}
 	}
 

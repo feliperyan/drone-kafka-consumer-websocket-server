@@ -82,7 +82,7 @@ func processMessages(srv *http.Server, socks chan *websocket.Conn, messages chan
 
 	for {
 		select {
-		case sig := <-sigint:
+		case sig := <-sigint: // server going down
 			fmt.Println("\nKilling server: ", sig)
 			for _, c := range allSocks {
 				err := c.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
@@ -93,10 +93,11 @@ func processMessages(srv *http.Server, socks chan *websocket.Conn, messages chan
 			if err := srv.Shutdown(context.Background()); err != nil {
 				log.Printf("HTTP server Shutdown Error: %v", err)
 			}
+			return
 
-		case c := <-leaving:
+		case c := <-leaving: //client closed conn
 			for i, v := range allSocks {
-				if v == c { // remove
+				if v == c { // remove client for slice
 					allSocks[i] = allSocks[len(allSocks)-1]
 					allSocks[len(allSocks)-1] = nil
 					allSocks = allSocks[:len(allSocks)-1]
@@ -104,13 +105,13 @@ func processMessages(srv *http.Server, socks chan *websocket.Conn, messages chan
 			}
 			fmt.Println("Client left. Total Clients: ", len(allSocks))
 
-		case msg := <-messages:
+		case msg := <-messages: // broadcast kafka message to clients
 			fmt.Println("received: ", msg)
 			for _, v := range allSocks {
 				v.WriteJSON(msg)
 			}
 
-		case conn := <-socks:
+		case conn := <-socks: // new client connected, add to slice
 			allSocks = append(allSocks, conn)
 			fmt.Println("Client joined. Total Clients: ", len(allSocks))
 		}

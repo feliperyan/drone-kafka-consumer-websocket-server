@@ -10,11 +10,11 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
-	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -38,6 +38,7 @@ var (
 	closeConn   chan *websocket.Conn
 	allConns    chan *websocket.Conn
 	addr        = flag.String("port", "8080", "http service address")
+	dev         = flag.Bool("dev", false, "whether to accept websockets from any origin")
 )
 
 func init() {
@@ -46,8 +47,12 @@ func init() {
 	allConns = make(chan *websocket.Conn)
 }
 
-func greet(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World! %s", time.Now())
+func indexWS(w http.ResponseWriter, r *http.Request) {
+	content, err := ioutil.ReadFile("websocket.html")
+	if err != nil {
+		fmt.Println("Could not open file.", err)
+	}
+	fmt.Fprintf(w, "%s", content)
 }
 
 func incomingWebsocket(wri http.ResponseWriter, req *http.Request) {
@@ -146,6 +151,11 @@ func main() {
 	flag.Parse()
 	log.SetFlags(0)
 
+	if *dev == true {
+		fmt.Println("Running in dev. Accepting websockets from any origin.")
+		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+	}
+
 	theAddr := fmt.Sprintf(":%s", *addr)
 	fmt.Println("Starting: ", theAddr)
 
@@ -153,8 +163,8 @@ func main() {
 	go processMessages(serv, allConns, allMessages, closeConn)
 	go kafkaReceiver(allMessages)
 
-	http.HandleFunc("/greet", greet)
-	http.HandleFunc("/", incomingWebsocket)
+	http.HandleFunc("/", indexWS)
+	http.HandleFunc("/ws", incomingWebsocket)
 	log.Fatal(serv.ListenAndServe())
 
 }

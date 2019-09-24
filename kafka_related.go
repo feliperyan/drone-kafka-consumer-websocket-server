@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 	"time"
@@ -21,6 +20,7 @@ var (
 	certPEM     string
 	keyPEM      string
 	caPEM       string
+	kafkaGroup  string
 )
 
 func init() {
@@ -36,6 +36,7 @@ func init() {
 	theTopic = getOSEnvOrReplacement("FRYAN_TOPIC", "drone-coordinates")
 	topicPrefix = getOSEnvOrReplacement("KAFKA_PREFIX", "")
 	theTopic = fmt.Sprintf("%s%s", topicPrefix, theTopic)
+	kafkaGroup = fmt.Sprintf("%s%s", topicPrefix, "group-websocket-1")
 }
 
 func getOSEnvOrReplacement(envVarName, valueIfNotFound string) string {
@@ -68,16 +69,11 @@ func getTLSConfig() *tls.Config {
 
 func initialiseKafkaReader(needsTLS bool) *kafka.Reader {
 
-	kafkaGroup := fmt.Sprintf("%s%s", topicPrefix, "group-websocket-1")
-
-	log.Print("prefix: ", topicPrefix)
-	log.Print("group: ", kafkaGroup)
-
 	if !needsTLS {
 		rea := kafka.NewReader(kafka.ReaderConfig{
-			Brokers:     allBrokers,
-			Topic:       theTopic,
-			GroupID:     kafkaGroup,
+			Brokers: allBrokers,
+			Topic:   theTopic,
+			//GroupID:     kafkaGroup,
 			StartOffset: kafka.LastOffset,
 		})
 		return rea

@@ -157,7 +157,7 @@ func main() {
 	log.SetFlags(0)
 
 	// debug
-	printKafkaVariables()
+	// printKafkaVariables()
 
 	if *dev == true {
 		fmt.Println("Running in dev. Accepting websockets from any origin.")

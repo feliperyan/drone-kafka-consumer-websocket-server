@@ -71,10 +71,10 @@ func initialiseKafkaReader(needsTLS bool) *kafka.Reader {
 
 	if !needsTLS {
 		rea := kafka.NewReader(kafka.ReaderConfig{
-			Brokers: allBrokers,
-			Topic:   theTopic,
-			//GroupID:     kafkaGroup,
-			//StartOffset: kafka.LastOffset,
+			Brokers:     allBrokers,
+			Topic:       theTopic,
+			GroupID:     kafkaGroup,
+			StartOffset: kafka.LastOffset,
 		})
 		return rea
 	}
@@ -90,7 +90,7 @@ func initialiseKafkaReader(needsTLS bool) *kafka.Reader {
 		Brokers:     allBrokers,
 		Topic:       theTopic,
 		Dialer:      dialer,
-		GroupID:     "group-websocket-1",
+		GroupID:     kafkaGroup,
 		StartOffset: kafka.LastOffset,
 	})
 

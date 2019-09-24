@@ -1,1 +1,1 @@
-web: /bin/drone-kafka-consumer
+web: bin/drone-kafka-consumer

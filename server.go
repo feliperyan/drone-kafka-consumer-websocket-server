@@ -77,7 +77,6 @@ func incomingWebsocket(wri http.ResponseWriter, req *http.Request) {
 			fmt.Println("From Client: ", string(msg))
 		}
 	}
-
 }
 
 func processMessages(srv *http.Server, socks chan *websocket.Conn, messages chan droneMessage, leaving chan *websocket.Conn) {
@@ -125,7 +124,7 @@ func processMessages(srv *http.Server, socks chan *websocket.Conn, messages chan
 }
 
 func kafkaReceiver(messages chan droneMessage) {
-	fmt.Println("KafkaReceiver goroutine")
+
 	theReader := initialiseKafkaReader(usingTLS)
 	defer theReader.Close()
 
@@ -142,15 +141,24 @@ func kafkaReceiver(messages chan droneMessage) {
 		} else {
 			messages <- droMsg
 		}
-
 	}
+}
 
+func printKafkaVariables() {
+	log.Print("Broker: ", theBroker)
+	log.Print("usingTLS: ", usingTLS)
+	// log.Print("certPEM: ", certPEM)
+	// log.Print("caPEM: ", caPEM)
+	log.Print("topic: ", theTopic)
 }
 
 func main() {
 
 	flag.Parse()
 	log.SetFlags(0)
+
+	// debug
+	printKafkaVariables()
 
 	if *dev == true {
 		fmt.Println("Running in dev. Accepting websockets from any origin.")

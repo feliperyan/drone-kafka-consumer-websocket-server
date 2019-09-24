@@ -74,7 +74,7 @@ func initialiseKafkaReader(needsTLS bool) *kafka.Reader {
 			Brokers: allBrokers,
 			Topic:   theTopic,
 			//GroupID:     kafkaGroup,
-			StartOffset: kafka.LastOffset,
+			//StartOffset: kafka.LastOffset,
 		})
 		return rea
 	}

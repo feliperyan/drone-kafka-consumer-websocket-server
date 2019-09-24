@@ -5,13 +5,10 @@
 <body>
 
     <div>
-        <form>
-            <label for="numberfield">Number</label>
-            <input type="text" id="numberfield" placeholder="12"/><br />
-            <button type="button" id="sendBtn">Send</button>
-        </form>
+        <h2 id="status">WebSocket Status:</h2>
+        <div id="container"></div>
     </div>
-    <div id="container"></div>
+    
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript">
@@ -37,10 +34,6 @@
                 }
                 return socket;
             }
-            $("#sendBtn").click(function (e) {
-                e.preventDefault();
-                ws.send(JSON.stringify({ Num: parseInt($("#numberfield").val()) }));
-            });
         });
     </script>
 </body>

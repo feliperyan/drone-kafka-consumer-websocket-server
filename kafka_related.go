@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 	"time"
@@ -68,6 +69,8 @@ func getTLSConfig() *tls.Config {
 func initialiseKafkaReader(needsTLS bool) *kafka.Reader {
 	joined := []string{theTopic, "group-websocket-1"}
 	kafkaGroup := strings.Join(joined, "")
+
+	log.Print("group: ", kafkaGroup)
 
 	if !needsTLS {
 		rea := kafka.NewReader(kafka.ReaderConfig{

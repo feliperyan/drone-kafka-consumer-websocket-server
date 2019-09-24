@@ -145,11 +145,10 @@ func kafkaReceiver(messages chan droneMessage) {
 }
 
 func printKafkaVariables() {
-	log.Print("Broker: ", theBroker)
+	log.Print("broker: ", theBroker)
 	log.Print("usingTLS: ", usingTLS)
-	// log.Print("certPEM: ", certPEM)
-	// log.Print("caPEM: ", caPEM)
 	log.Print("topic: ", theTopic)
+	log.Print("group: ", kafkaGroup)
 }
 
 func main() {

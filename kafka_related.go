@@ -12,13 +12,14 @@ import (
 )
 
 var (
-	theBroker  string
-	allBrokers []string
-	theTopic   string
-	usingTLS   bool
-	certPEM    string
-	keyPEM     string
-	caPEM      string
+	theBroker   string
+	allBrokers  []string
+	theTopic    string
+	topicPrefix string
+	usingTLS    bool
+	certPEM     string
+	keyPEM      string
+	caPEM       string
 )
 
 func init() {
@@ -65,12 +66,14 @@ func getTLSConfig() *tls.Config {
 }
 
 func initialiseKafkaReader(needsTLS bool) *kafka.Reader {
+	joined := []string{theTopic, "group-websocket-1"}
+	kafkaGroup := strings.Join(joined, "")
 
 	if !needsTLS {
 		rea := kafka.NewReader(kafka.ReaderConfig{
 			Brokers:     allBrokers,
 			Topic:       theTopic,
-			GroupID:     "group-websocket-1",
+			GroupID:     kafkaGroup,
 			StartOffset: kafka.LastOffset,
 		})
 		return rea

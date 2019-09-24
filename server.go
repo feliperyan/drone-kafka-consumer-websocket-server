@@ -56,6 +56,7 @@ func indexWS(w http.ResponseWriter, r *http.Request) {
 }
 
 func incomingWebsocket(wri http.ResponseWriter, req *http.Request) {
+	log.Print("incoming ws req origin: ", req.Header["Origin"])
 	newConn, err := upgrader.Upgrade(wri, req, nil)
 	if err != nil {
 		log.Print("upgrade:", err)

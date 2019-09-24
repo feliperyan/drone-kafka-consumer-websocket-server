@@ -69,6 +69,8 @@ func getTLSConfig() *tls.Config {
 func initialiseKafkaReader(needsTLS bool) *kafka.Reader {
 
 	kafkaGroup := fmt.Sprintf("%s%s", topicPrefix, "group-websocket-1")
+
+	log.Print("prefix: ", topicPrefix)
 	log.Print("group: ", kafkaGroup)
 
 	if !needsTLS {

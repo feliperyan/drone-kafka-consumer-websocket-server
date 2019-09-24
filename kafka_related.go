@@ -67,7 +67,7 @@ func getTLSConfig() *tls.Config {
 }
 
 func initialiseKafkaReader(needsTLS bool) *kafka.Reader {
-	joined := []string{theTopic, "group-websocket-1"}
+	joined := []string{topicPrefix, "group-websocket-1"}
 	kafkaGroup := strings.Join(joined, "")
 
 	log.Print("group: ", kafkaGroup)

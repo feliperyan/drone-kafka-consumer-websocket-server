@@ -34,7 +34,7 @@ func init() {
 	allBrokers = strings.Split(theBroker, ",")
 
 	theTopic = getOSEnvOrReplacement("FRYAN_TOPIC", "drone-coordinates")
-	topicPrefix := getOSEnvOrReplacement("KAFKA_PREFIX", "")
+	topicPrefix = getOSEnvOrReplacement("KAFKA_PREFIX", "")
 	theTopic = fmt.Sprintf("%s%s", topicPrefix, theTopic)
 }
 

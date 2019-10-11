@@ -162,12 +162,13 @@ func main() {
 	log.SetFlags(0)
 
 	if *dev == true {
-		fmt.Println("Running in dev. Accepting websockets from any origin.")
 		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	}
 
 	theAddr := fmt.Sprintf(":%s", *addr)
-	fmt.Println("Starting: ", theAddr)
+	log.Println("Starting? ", theAddr)
+	log.Println("Dev?: ", *dev)
+	log.Println("Kafka?: ", theBroker)
 
 	serv := &http.Server{Addr: theAddr, Handler: nil}
 	go processMessages(serv, allConns, allMessages, closeConn)

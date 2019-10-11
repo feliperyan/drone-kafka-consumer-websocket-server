@@ -30,6 +30,7 @@ type droneMessage struct {
 	NextDestination int        `json:"NextDestination"`
 	Speed           float64    `json:"Speed"`
 	Name            string     `json:"Name"`
+	Tick            int64      `json:"Tick"`
 }
 
 var (
@@ -87,6 +88,7 @@ func processMessages(srv *http.Server, socks chan *websocket.Conn, messages chan
 
 	for {
 		select {
+
 		case sig := <-sigint: // server going down
 			fmt.Println("\nKilling server: ", sig)
 			for _, c := range allSocks {
@@ -100,7 +102,7 @@ func processMessages(srv *http.Server, socks chan *websocket.Conn, messages chan
 			}
 			return
 
-		case c := <-leaving: //client closed conn
+		case c := <-leaving: // client closed conn
 			for i, v := range allSocks {
 				if v == c { // remove client for slice
 					allSocks[i] = allSocks[len(allSocks)-1]
@@ -128,7 +130,10 @@ func kafkaReceiver(messages chan droneMessage) {
 	theReader := initialiseKafkaReader(usingTLS)
 	defer theReader.Close()
 
+	// msgBuffer := make([]droneMessage, 0)
+
 	for {
+		// next call blocks till it receives messages from kafka.
 		m, err := theReader.ReadMessage(context.Background())
 		if err != nil {
 			break
@@ -155,9 +160,6 @@ func main() {
 
 	flag.Parse()
 	log.SetFlags(0)
-
-	// debug
-	// printKafkaVariables()
 
 	if *dev == true {
 		fmt.Println("Running in dev. Accepting websockets from any origin.")

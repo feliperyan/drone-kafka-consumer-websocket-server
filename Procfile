@@ -1,1 +1,1 @@
-web: bin/drone-kafka-consumer -port=$PORT -dev=$DEV
+web: bin/drone-kafka-consumer -port=$PORT

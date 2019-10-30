@@ -39,7 +39,6 @@ var (
 	closeConn   chan *websocket.Conn
 	allConns    chan *websocket.Conn
 	addr        = flag.String("port", "8080", "http service address")
-	dev         = flag.Bool("dev", false, "whether to accept websockets from any origin")
 )
 
 func init() {
@@ -165,9 +164,9 @@ func main() {
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 
 	theAddr := fmt.Sprintf(":%s", *addr)
-	log.Println("Starting? ", theAddr)
-	log.Println("Dev?: ", *dev)
-	log.Println("Kafka?: ", theBroker)
+	log.Println("Starting: ", theAddr)
+	log.Println("Kafka: ", theBroker)
+	log.Println("Topic: ", theTopic)
 
 	serv := &http.Server{Addr: theAddr, Handler: nil}
 	go processMessages(serv, allConns, allMessages, closeConn)

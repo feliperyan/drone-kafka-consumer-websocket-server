@@ -161,9 +161,8 @@ func main() {
 	flag.Parse()
 	log.SetFlags(0)
 
-	if *dev == true {
-		upgrader.CheckOrigin = func(r *http.Request) bool { return true }
-	}
+	// Not secure at all so anyone can connect to this websocket...
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 
 	theAddr := fmt.Sprintf(":%s", *addr)
 	log.Println("Starting? ", theAddr)
